@@ -1,0 +1,5 @@
+.wrapper {
+  display: flex !important;
+  justify-content: center;
+  text-align: center;
+}
