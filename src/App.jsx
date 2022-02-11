@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Searchbar from "./components/Searchbar/Searchbar";
 import ImageGallery from "./components/ImageGallery/ImageGallery";
 import Button from "./components/Button/Button";
@@ -15,15 +15,27 @@ const App = () => {
   const [error, setError] = useState(null);
   const [bigImage, setBigImage] = useState("");
 
+  const scrollRef = useRef(null);
+
   useEffect(() => {
     setLoading(true);
     fetchApi(query, page)
       .then((data) => {
+        //scroll old images up when add new=> add height into memory
+        scrollRef.current = document.body.scrollHeight; //
         setImages((prev) => [...prev, ...data.hits]);
       })
       .catch((error) => setError(error.message))
       .finally(() => setLoading(false));
   }, [query, page]);
+
+  //scroll old images up when add new
+  useEffect(() => {
+    window.scrollTo({
+      top: scrollRef.current,
+      behavior: "smooth",
+    });
+  }, [images]);
 
   const handleFormSubmit = (query) => {
     setQuery(query);
